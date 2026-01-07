@@ -14,11 +14,7 @@ namespace olympus {
 class Matrix {
 public:
     /// @brief Result container for LU decomposition (L, U, and permutation P).
-    struct LUDecomposition {
-        Matrix L;
-        Matrix U;
-        Matrix P;
-    };
+    struct LUDecomposition;
 
     /// @brief Proxy for mutable row access via operator[].
     class RowProxy {
@@ -98,6 +94,12 @@ private:
     std::vector<double> data_;
 
     std::size_t index(std::size_t row, std::size_t col) const;
+};
+
+struct Matrix::LUDecomposition {
+    Matrix L;
+    Matrix U;
+    Matrix P;
 };
 
 /// @brief Scalar multiplication with scalar on the left.
