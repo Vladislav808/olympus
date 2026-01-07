@@ -135,7 +135,7 @@ Matrix Matrix::transpose() const {
     return result;
 }
 
-Matrix::LUDecomposition Matrix::luDecomposition() const {
+LUDecomposition Matrix::luDecomposition() const {
     if (rows_ != cols_) {
         throw std::invalid_argument("LU decomposition requires a square matrix");
     }
