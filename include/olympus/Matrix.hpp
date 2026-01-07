@@ -10,6 +10,12 @@ namespace olympus {
 
 class Matrix {
 public:
+    struct LUDecomposition {
+        Matrix L;
+        Matrix U;
+        Matrix P;
+    };
+
     class RowProxy {
     public:
         RowProxy(double* row_start, std::size_t cols);
@@ -51,6 +57,8 @@ public:
     Matrix operator*(const Matrix& other) const;
 
     Matrix transpose() const;
+    LUDecomposition luDecomposition() const;
+    Matrix inverse() const;
 
 private:
     std::size_t rows_ = 0;
