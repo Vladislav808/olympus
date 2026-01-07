@@ -56,6 +56,11 @@ public:
     Matrix operator*(double scalar) const;
     Matrix operator*(const Matrix& other) const;
 
+    void addRow(const std::vector<double>& values);
+    void addColumn(const std::vector<double>& values);
+    void removeRow(std::size_t row);
+    void removeColumn(std::size_t col);
+
     Matrix transpose() const;
     LUDecomposition luDecomposition() const;
     Matrix inverse() const;

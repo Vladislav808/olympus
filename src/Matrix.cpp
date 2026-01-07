@@ -125,6 +125,92 @@ Matrix Matrix::operator*(const Matrix& other) const {
     return result;
 }
 
+void Matrix::addRow(const std::vector<double>& values) {
+    if (rows_ == 0 && cols_ == 0) {
+        cols_ = values.size();
+        rows_ = cols_ == 0 ? 0 : 1;
+        data_ = values;
+        return;
+    }
+
+    if (values.size() != cols_) {
+        throw std::invalid_argument("Row size must match matrix column count");
+    }
+
+    data_.insert(data_.end(), values.begin(), values.end());
+    ++rows_;
+}
+
+void Matrix::addColumn(const std::vector<double>& values) {
+    if (rows_ == 0 && cols_ == 0) {
+        rows_ = values.size();
+        cols_ = rows_ == 0 ? 0 : 1;
+        data_ = values;
+        return;
+    }
+
+    if (values.size() != rows_) {
+        throw std::invalid_argument("Column size must match matrix row count");
+    }
+
+    std::vector<double> updated;
+    updated.reserve((cols_ + 1) * rows_);
+    for (std::size_t row = 0; row < rows_; ++row) {
+        const std::size_t row_start = row * cols_;
+        updated.insert(updated.end(), data_.begin() + row_start, data_.begin() + row_start + cols_);
+        updated.push_back(values[row]);
+    }
+    data_.swap(updated);
+    ++cols_;
+}
+
+void Matrix::removeRow(std::size_t row) {
+    if (row >= rows_) {
+        throw std::out_of_range("Row index is out of range");
+    }
+
+    std::vector<double> updated;
+    updated.reserve((rows_ - 1) * cols_);
+    for (std::size_t current = 0; current < rows_; ++current) {
+        if (current == row) {
+            continue;
+        }
+        const std::size_t row_start = current * cols_;
+        updated.insert(updated.end(), data_.begin() + row_start, data_.begin() + row_start + cols_);
+    }
+    data_.swap(updated);
+    --rows_;
+    if (rows_ == 0) {
+        data_.clear();
+    }
+}
+
+void Matrix::removeColumn(std::size_t col) {
+    if (col >= cols_) {
+        throw std::out_of_range("Column index is out of range");
+    }
+
+    if (cols_ == 1) {
+        --cols_;
+        data_.clear();
+        return;
+    }
+
+    std::vector<double> updated;
+    updated.reserve(rows_ * (cols_ - 1));
+    for (std::size_t row = 0; row < rows_; ++row) {
+        const std::size_t row_start = row * cols_;
+        for (std::size_t current_col = 0; current_col < cols_; ++current_col) {
+            if (current_col == col) {
+                continue;
+            }
+            updated.push_back(data_[row_start + current_col]);
+        }
+    }
+    data_.swap(updated);
+    --cols_;
+}
+
 Matrix Matrix::transpose() const {
     Matrix result(cols_, rows_);
     for (std::size_t row = 0; row < rows_; ++row) {
